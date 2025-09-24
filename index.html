@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PWA Sensor Demo</title>
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
+  <style>
+    :root { font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    body { margin: 0; background: #0b1220; color: #e6edf3; }
+    header { position: sticky; top: 0; background: #0ea5e9; color: #001018; padding: 12px 16px; font-weight: 700; }
+    main { padding: 16px; display: grid; gap: 16px; max-width: 900px; margin: 0 auto; }
+    .card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 16px; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
+    .row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; }
+    h2 { margin: 0 0 8px; font-size: 1.1rem; color: #93c5fd; }
+    .val { font-variant-numeric: tabular-nums; font-weight: 600; }
+    button { appearance: none; border: 0; padding: 10px 14px; border-radius: 12px; background: #22c55e; color: #001008; font-weight: 700; }
+    button.secondary { background: #94a3b8; color: #0a0f14; }
+    .grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+    footer { opacity: .7; text-align: center; padding: 24px 12px; }
+    .note { color: #9ca3af; font-size: .9rem; }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>PWA Sensor Demo</header>
+  <main>
+    <div class="card">
+      <div class="row">
+        <h2>Install</h2>
+        <button id="installBtn" class="secondary" disabled>Install</button>
+      </div>
+      <p class="note">Tap <em>Install</em> to add to home screen when available. Works offline after first load.</p>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <h2>Motion Sensors</h2>
+        <div>
+          <button id="startMotion">Start</button>
+          <button id="stopMotion" class="secondary">Stop</button>
+        </div>
+      </div>
+      <div class="grid">
+        <div>Accel X: <span id="ax" class="val">–</span></div>
+        <div>Accel Y: <span id="ay" class="val">–</span></div>
+        <div>Accel Z: <span id="az" class="val">–</span></div>
+        <div>Gyro X: <span id="gx" class="val">–</span></div>
+        <div>Gyro Y: <span id="gy" class="val">–</span></div>
+        <div>Gyro Z: <span id="gz" class="val">–</span></div>
+        <div>Orientation α: <span id="oa" class="val">–</span></div>
+        <div>Orientation β: <span id="ob" class="val">–</span></div>
+        <div>Orientation γ: <span id="og" class="val">–</span></div>
+      </div>
+      <p class="note">Uses Generic Sensor API if available; falls back to DeviceMotion/Orientation events.</p>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <h2>Location</h2>
+        <div>
+          <button id="startGeo">Start</button>
+          <button id="stopGeo" class="secondary">Stop</button>
+        </div>
+      </div>
+      <div class="grid">
+        <div>Lat: <span id="lat" class="val">–</span></div>
+        <div>Lng: <span id="lng" class="val">–</span></div>
+        <div>Accuracy (m): <span id="acc" class="val">–</span></div>
+        <div>Speed (m/s): <span id="spd" class="val">–</span></div>
+      </div>
+      <details style="margin-top:10px;">
+        <summary>Show raw Position / Error</summary>
+        <pre id="geoRaw" style="white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;background:#0a0f14;padding:8px;border-radius:8px;border:1px solid #1f2937;">(no data yet)</pre>
+      </details>
+      <p class="note">Requires geolocation permission.</p>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2>Battery</h2><span class="note">(if supported)</span></div>
+      <div class="grid">
+        <div>Level: <span id="batLvl" class="val">–</span></div>
+        <div>Charging: <span id="batChg" class="val">–</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2>Ambient Light</h2><span class="note">(may be restricted)</span></div>
+      <div>Illuminance (lux): <span id="lux" class="val">–</span></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <h2>Web NFC</h2>
+        <button id="scanNfc">Scan</button>
+      </div>
+      <p class="note">Android Chrome supports Web NFC on many devices. Bring a tag close after tapping Scan.</p>
+      <div>Last NFC text: <span id="nfcOut" class="val">–</span></div>
+    </div>
+
+    <footer>
+      <div class="note">Open-source demo. Built as a PWA: manifest + service worker for offline caching.</div>
+    </footer>
+  </main>
+
+  <script type="module" src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>
