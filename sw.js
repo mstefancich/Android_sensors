@@ -1,6 +1,6 @@
 const CACHE = 'pwa-sensor-demo-v1';
 const ASSETS = [
-  '/',
+  './',
   '/index.html',
   '/app.js',
   '/manifest.webmanifest',
